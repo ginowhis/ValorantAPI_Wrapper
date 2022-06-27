@@ -1,5 +1,4 @@
 # module imports
-from logging import exception
 import requests
 import os
 import base64
@@ -116,7 +115,7 @@ class Client:
             "X-Riot-Entitlements-JWT": self.en_token,
             "Authorization": self.authorization
         }
-        data = requests.get(url=url, headers=headers).json
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     def put_player_loadout(self, loadout:dict) -> dict:
@@ -129,7 +128,7 @@ class Client:
             "X-Riot-Entitlements-JWT": self.en_token,
             "Authorization": self.authorization
         }
-        data = requests.put(url=url, headers=headers, json=loadout)
+        data = requests.put(url=url, headers=headers, json=loadout).json()
         return data
 
     def fetch_mmr(self) -> dict:
@@ -176,7 +175,7 @@ class Client:
             "X-Riot-ClientVersion": self.__get_current_version(),
             "X-Riot-ClientPlatform": self.client_platform
         }
-        data = requests.get(url=url, headers=headers).json
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     def fetch_competitive_updates(self, start_index:int=0, end_index:int=15, queue_id:str="competitive") -> dict:
@@ -192,7 +191,7 @@ class Client:
             "Authorization": self.authorization,
             "X-Riot-ClientPlatform": self.client_platform
         }
-        data = requests.get(url=url, headers=headers).json
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     def fetch_leaderboard(self, season:str, start_index:int=0, size:int=25, region:str="na") -> dict:
@@ -208,7 +207,7 @@ class Client:
             "Authorization": self.authorization,
             "X-Riot-ClientVersion": self.__get_current_version()
         }
-        data = requests.get(url=url, headers=headers).json
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     def fetch_player_restrictions(self) -> dict:
@@ -221,7 +220,7 @@ class Client:
             "X-Riot-Entitlements-JWT": self.en_token,
             "Authorization": self.authorization
         }
-        data = requests.get(url=url, headers=headers).json
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     def fetch_item_progression_definitions(self) -> dict:
@@ -243,7 +242,7 @@ class Client:
         Get various internal game configuration settings set by Riot
         '''
         url = f"https://shared.{self.shard}.a.pvp.net/v1/config/{self.shard}"
-        data = requests.get(url=url).json
+        data = requests.get(url=url).json()
         return data
 
     # store endpoints
@@ -252,7 +251,12 @@ class Client:
         Store_GetOffers
         Get prices for all store items
         '''
-        data = self.fetch("/store/v1/offers/",endpoint_type="pd")
+        url = f"https://pd.{self.shard}.a.pvp.net/store/v1/offers/"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data 
 
     def store_fetch_storefront(self) -> dict:
@@ -260,7 +264,12 @@ class Client:
         Store_GetStorefrontV2
         Get the currently available items in the store
         '''
-        data = self.fetch(f"/store/v2/storefront/{self.puuid}",endpoint_type="pd")
+        url = f"https://pd.{self.shard}.a.pvp.net/store/v2/storefront/{self.puuid}"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data 
 
     def store_fetch_wallet(self) -> dict:
@@ -269,7 +278,12 @@ class Client:
         Get amount of Valorant points and Radianite the player has
         Valorant points have the id 85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741 and Radianite points have the id e59aa87c-4cbf-517a-5983-6e81511be9b7        
         '''
-        data = self.fetch(f"/store/v1/wallet/{self.puuid}",endpoint_type="pd")
+        url = f"https://pd.{self.shard}.a.pvp.net/store/v1/wallet/{self.puuid}"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data 
 
     def store_fetch_order(self, order_id:str) -> dict:
@@ -277,7 +291,12 @@ class Client:
         Store_GetOrder
         {order id}: The ID of the order. Can be obtained when creating an order.
         '''
-        data = self.fetch(f"/store/v1/order/{order_id}",endpoint_type="pd")
+        url = f"https://pd.{self.shard}.a.pvp.net/store/v1/order/{order_id}"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data 
 
     def store_fetch_entitlements(self, item_type:str="e7c63390-eda7-46e0-bb7a-a6abdacd2433") -> dict:
@@ -296,7 +315,12 @@ class Client:
         "3f296c07-64c3-494c-923b-fe692a4fa1bd": "player_card",
         "de7caa6b-adf7-4588-bbd1-143831e786c6": "player_title",
         '''
-        data = self.fetch(endpoint=f"/store/v1/entitlements/{self.puuid}/{item_type}", endpoint_type="pd")
+        url = f"https://pd.{self.shard}.a.pvp.net/store/v1/entitlements/{self.puuid}/{item_type}"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data
 
 
@@ -306,7 +330,13 @@ class Client:
         Party_FetchPlayer
         Get the Party ID that a given player belongs to                
         '''
-        data = self.fetch(endpoint=f"/parties/v1/players/{self.puuid}",endpoint_type="glz")
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/players/{self.puuid}"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization,
+            "X-Riot-ClientVersion": self.__get_current_version()
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     def party_remove_player(self, puuid:str) -> None:
@@ -315,7 +345,12 @@ class Client:
         Removes a player from the current party      
         '''
         puuid = self.__check_puuid(puuid)
-        data = self.delete(endpoint=f"/parties/v1/players/{puuid}",endpoint_type="glz")
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/players/{puuid}"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.delete(url=url, headers=headers).json()
         return data
 
     def fetch_party(self) -> dict:
@@ -324,7 +359,12 @@ class Client:
         Get details about a given party id    
         '''
         party_id = self.__get_current_party_id()
-        data = self.fetch(endpoint=f"/parties/v1/parties/{party_id}",endpoint_type="glz")
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     def party_set_member_ready(self, ready:bool) -> dict:
@@ -333,7 +373,12 @@ class Client:
         Sets whether a party member is ready for queueing or not      
         '''
         party_id = self.__get_current_party_id()
-        data = self.post(endpoint=f"/parties/v1/parties/{party_id}/members/{self.puuid}/setReady",endpoint_type="glz",json_data={"ready": ready})
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}/members/{self.puuid}/setReady"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.post(url=url, headers=headers, json={"ready": ready}).json()
         return data 
 
     def party_refresh_competitive_tier(self) -> dict:
@@ -342,7 +387,13 @@ class Client:
         Refreshes the competitive tier for a player    
         '''
         party_id = self.__get_current_party_id()
-        data = self.post(endpoint=f"/parties/v1/parties/{party_id}/members/{self.puuid}/refreshCompetitiveTier",endpoint_type="glz")
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}/members/{self.puuid}/refreshCompetitiveTier"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization,
+            "X-Riot-ClientVersion": self.__get_current_version()
+        }
+        data = requests.post(url=url, headers=headers).json()
         return data
 
     def party_refresh_player_identity(self) -> dict:
@@ -351,7 +402,13 @@ class Client:
         Refreshes the identity for a player   
         '''
         party_id = self.__get_current_party_id()
-        data = self.post(endpoint=f"/parties/v1/parties/{party_id}/members/{self.puuid}/refreshPlayerIdentity",endpoint_type="glz")
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}/members/{self.puuid}/refreshPlayerIdentity"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization,
+            "X-Riot-ClientVersion": self.__get_current_version()
+        }
+        data = requests.post(url=url, headers=headers).json()
         return data
 
     def party_refresh_pings(self) -> dict:
@@ -360,7 +417,13 @@ class Client:
         Refreshes the pings for a player      
         '''
         party_id = self.__get_current_party_id()
-        data = self.post(endpoint=f"/parties/v1/parties/{party_id}/members/{self.puuid}/refreshPings",endpoint_type="glz")
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}/members/{self.puuid}/refreshPings"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization,
+            "X-Riot-ClientVersion": self.__get_current_version()
+        }
+        data = requests.post(url=url, headers=headers).json()
         return data
 
     def party_change_queue(self, queue_id:str) -> dict:
@@ -370,7 +433,12 @@ class Client:
         '''
         self.__check_queue_type(queue_id)
         party_id = self.__get_current_party_id()
-        data = self.post(endpoint=f"/parties/v1/parties/{party_id}/queue",endpoint_type="glz",json_data={"queueID": queue_id})
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}/queue"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.post(url=url, headers=headers, json={"queueID": queue_id}).json()
         return data 
 
     def party_start_custom_game(self) -> dict:
@@ -379,7 +447,13 @@ class Client:
         Starts a custom game     
         '''
         party_id = self.__get_current_party_id()
-        data = self.post(endpoint=f"/parties/v1/parties/{party_id}/startcustomgame",endpoint_type="glz")
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}/startcustomgame"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization,
+            "X-Riot-ClientVersion": self.__get_current_version()
+        }
+        data = requests.post(url=url, headers=headers).json()
         return data 
 
     def party_enter_matchmaking_queue(self) -> dict:
@@ -388,7 +462,12 @@ class Client:
         Enters the matchmaking queue
         '''
         party_id = self.__get_current_party_id()
-        data = self.post(endpoint=f"/parties/v1/parties/{party_id}/matchmaking/join",endpoint_type="glz")
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}/matchmaking/join"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.post(url=url, headers=headers).json()
         return data 
 
     def party_leave_matchmaking_queue(self) -> dict:
@@ -397,7 +476,12 @@ class Client:
         Leaves the matchmaking queue   
         '''
         party_id = self.__get_current_party_id()
-        data = self.post(endpoint=f"/parties/v1/parties/{party_id}/matchmaking/leave",endpoint_type="glz")
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}/matchmaking/leave"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.post(url=url, headers=headers).json()
         return data 
 
     def set_party_accessibility(self, open:bool) -> dict:
@@ -407,7 +491,12 @@ class Client:
         '''
         state = "OPEN" if open else "CLOSED"
         party_id = self.__get_current_party_id()
-        data = self.post(endpoint=f"/parties/v1/parties/{party_id}/accessibility",endpoint_type="glz",json_data={"accessibility":state})
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}/accessibility"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.post(url=url, headers=headers, json={"accessibility":state}).json()
         return data
 
     def party_set_custom_game_settings(self, settings: dict) -> dict:
@@ -421,11 +510,23 @@ class Client:
             "Mode": "/Game/GameModes/Bomb/BombGameMode.BombGameMode_C", # url to gamemode
             "UseBots": true, # this isn't used anymore :(
             "GamePod": "aresriot.aws-rclusterprod-use1-1.na-gp-ashburn-awsedge-1", # server
-            "GameRules": null # idk what this is for
+            "GameRules": {
+		            "AllowGameModifiers": "true/false",
+		            "PlayOutAllRounds": "true/false",
+		            "SkipMatchHistory": "true/false",
+		            "TournamentMode": "true/false",
+		            "IsOvertimeWinByTwo": "true/false"
+	        }
         }
         '''
         party_id = self.__get_current_party_id()
-        data = self.post(endpoint=f"/parties/v1/parties/{party_id}/customgamesettings",endpoint_type="glz",json_data=settings)
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}/customgamesettings"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization,
+            "X-Riot-ClientVersion": self.__get_current_version()
+        }
+        data = requests.post(url=url, headers=headers, json=settings).json()
         return data
         
     def party_invite_by_display_name(self, name:str, tag:str) -> dict:
@@ -436,7 +537,13 @@ class Client:
         omit the "#" in tag
         '''
         party_id = self.__get_current_party_id()
-        data = self.post(endpoint=f"/parties/v1/parties/{party_id}/invites/name/{name}/tag/{tag}",endpoint_type="glz")
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}/invites/name/{name}/tag/{tag}"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization,
+            "X-Riot-ClientVersion": self.__get_current_version()
+        }
+        data = requests.post(url=url, headers=headers).json()
         return data
 
     def party_request_to_join(self, party_id:str, other_puuid:str) -> dict:
@@ -444,9 +551,12 @@ class Client:
         Party_RequestToJoinParty
         Requests to join a party
         '''
-        data = self.post(endpoint=f"/parties/v1/parties/{party_id}/request",endpoint_type="glz",json_data={
-            "Subjects":[other_puuid]
-        })
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}/request"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.post(url=url, headers=headers, json={"Subjects": other_puuid}).json()
         return data
 
     def party_decline_request(self, request_id:str) -> dict:
@@ -457,7 +567,12 @@ class Client:
         {request id}: The ID of the party request. Can be found from the Requests array on the Party_FetchParty endpoint.
         '''
         party_id = self.__get_current_party_id()
-        data = self.post(endpoint=f"/parties/v1/parties/{party_id}/request/{request_id}/decline",endpoint_type="glz")
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}/request/{request_id}/decline"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.post(url=url, headers=headers).json()
         return data
 
     def party_join(self, party_id:str) -> dict:
@@ -481,7 +596,11 @@ class Client:
         Party_FetchCustomGameConfigs
         Get information about the available gamemodes
         '''
-        data = self.fetch(endpoint="/parties/v1/parties/customgameconfigs",endpoint_type="glz") 
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/customgameconfigs"
+        headers = {
+            "X-Riot-ClientVersion": self.__get_current_version()
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     def party_fetch_muc_token(self) -> dict:
@@ -490,7 +609,12 @@ class Client:
         Get a token for party chat
         '''
         party_id = self.__get_current_party_id()
-        data = self.fetch(endpoint=f"/parties/v1/parties/{party_id}/muctoken",endpoint_type="glz")
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}/muctoken"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data 
 
     def party_fetch_voice_token(self) -> dict:
@@ -499,10 +623,15 @@ class Client:
         Get a token for party voice
         '''
         party_id = self.__get_current_party_id() 
-        data = self.fetch(endpoint=f"/parties/v1/parties/{party_id}/voicetoken",endpoint_type="glz")
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/parties/v1/parties/{party_id}/voicetoken"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data 
 
-    
+
     # live game endpoints
     def coregame_fetch_player(self) -> dict:
         '''
@@ -624,7 +753,17 @@ class Client:
         Pregame_GetPlayer
         Get the ID of a game in the pre-game stage       
         '''
-        data = self.fetch(endpoint=f"/pregame/v1/players/{self.puuid}",endpoint_type="glz", exceptions={404: [PhaseError, "You are not in a pre-game"]})
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/pregame/v1/players/{self.puuid}"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers)
+        status_code = data.status_code
+        if status_code == 400:
+            raise PhaseError("You are not in a pre-game")
+        else:
+            data.json()
         return data 
 
     def pregame_fetch_match(self, match_id:str=None) -> dict:
@@ -633,7 +772,17 @@ class Client:
         Get info for a game in the pre-game stage       
         '''
         match_id = self.__pregame_check_match_id(match_id)
-        data = self.fetch(endpoint=f"/pregame/v1/matches/{match_id}",endpoint_type="glz", exceptions={404: [PhaseError, "You are not in a pre-game"]})
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/pregame/v1/matches/{match_id}"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers)
+        status_code = data.status_code
+        if status_code == 400:
+            raise PhaseError("You are not in a pre-game")
+        else:
+            data.json()
         return data 
 
     def pregame_fetch_match_loadouts(self, match_id:str=None) -> dict:
@@ -642,7 +791,17 @@ class Client:
         Get player skins and sprays for a game in the pre-game stage      
         '''
         match_id = self.__pregame_check_match_id(match_id)
-        data = self.fetch(endpoint=f"/pregame/v1/matches/{match_id}/loadouts",endpoint_type="glz", exceptions={404: [PhaseError, "You are not in a pre-game"]})
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/pregame/v1/matches/{match_id}/loadouts"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers)
+        status_code = data.status_code
+        if status_code == 400:
+            raise PhaseError("You are not in a pre-game")
+        else:
+            data.json()
         return data 
 
     def pregame_fetch_chat_token(self,match_id:str=None) -> dict:
@@ -651,7 +810,17 @@ class Client:
         Get a chat token     
         '''
         match_id = self.__pregame_check_match_id(match_id)
-        data = self.fetch(endpoint=f"/pregame/v1/matches/{match_id}/chattoken",endpoint_type="glz", exceptions={404: [PhaseError, "You are not in a pre-game"]})
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/pregame/v1/matches/{match_id}/chattoken"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers)
+        status_code = data.status_code
+        if status_code == 400:
+            raise PhaseError("You are not in a pre-game")
+        else:
+            data.json()
         return data 
 
     def pregame_fetch_voice_token(self,match_id:str=None) -> dict:
@@ -660,7 +829,17 @@ class Client:
         Get a voice token      
         '''
         match_id = self.__pregame_check_match_id(match_id)
-        data = self.fetch(endpoint=f"/pregame/v1/matches/{match_id}/voicetoken",endpoint_type="glz", exceptions={404: [PhaseError, "You are not in a pre-game"]})
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/pregame/v1/matches/{match_id}/voicetoken"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers)
+        status_code = data.status_code
+        if status_code == 400:
+            raise PhaseError("You are not in a pre-game")
+        else:
+            data.json()
         return data 
 
     def pregame_select_character(self, agent_id:str, match_id:str=None) -> dict:
@@ -671,7 +850,17 @@ class Client:
         don't use this for instalocking :)
         '''
         match_id = self.__pregame_check_match_id(match_id)
-        data = self.post(endpoint=f"/pregame/v1/matches/{match_id}/select/{agent_id}",endpoint_type="glz", exceptions={404: [PhaseError, "You are not in a pre-game"]})
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/pregame/v1/matches/{match_id}/select/{agent_id}"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.post(url=url, headers=headers)
+        status_code = data.status_code
+        if status_code == 400:
+            raise PhaseError("You are not in a pre-game")
+        else:
+            data.json()
         return data 
 
     def pregame_lock_character(self, agent_id:str, match_id:str=None) -> dict:
@@ -682,7 +871,17 @@ class Client:
         don't use this for instalocking :)       
         '''
         match_id = self.__pregame_check_match_id(match_id)
-        data = self.post(endpoint=f"/pregame/v1/matches/{match_id}/lock/{agent_id}",endpoint_type="glz", exceptions={404: [PhaseError, "You are not in a pre-game"]})
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/pregame/v1/matches/{match_id}/lock/{agent_id}"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.post(url=url, headers=headers)
+        status_code = data.status_code
+        if status_code == 400:
+            raise PhaseError("You are not in a pre-game")
+        else:
+            data.json()
         return data 
 
     def pregame_quit_match(self, match_id:str=None) -> dict:
@@ -691,7 +890,17 @@ class Client:
         Quit a match in the pre-game stage     
         '''
         match_id = self.__pregame_check_match_id(match_id)
-        data = self.post(endpoint=f"/pregame/v1/matches/{match_id}/quit",endpoint_type="glz", exceptions={404: [PhaseError, "You are not in a pre-game"]})
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/pregame/v1/matches/{match_id}/quit"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.post(url=url, headers=headers)
+        status_code = data.status_code
+        if status_code == 400:
+            raise PhaseError("You are not in a pre-game")
+        else:
+            data.json()
         return data 
 
     
@@ -757,6 +966,12 @@ class Client:
         ItemProgressDefinitionsV2_Fetch
         Fetch definitions for skin upgrade progressions
         '''
+        url = f"https://pd.{self.shard}.a.pvp.net/contract-definitions/v3/item-upgrades"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     def contracts_unlock_item_progress(self, progression_id:str) -> dict:
@@ -764,7 +979,12 @@ class Client:
         Contracts_UnlockItemProgressV2
         Unlock an item progression
         '''
-        data = self.post(endpoint=f"/contracts/v2/item-upgrades/{progression_id}/{self.puuid}", endpoint_type="pd")
+        url = f"https://pd.{self.shard}.a.pvp.net/contracts/v2/item-upgrades/{progression_id}/{self.puuid}"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     
@@ -774,14 +994,24 @@ class Client:
         Session_Get
         Get information about the current game session     
         '''
-        data = self.fetch(endpoint=f"/session/v1/sessions/{self.puuid}",endpoint_type="glz")
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/session/v1/sessions/{self.puuid}"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data 
 
     def session_reconnect(self) -> dict:
         '''
         Session_ReConnect
         '''
-        data = self.fetch(endpoint=f"/session/v1/sessions/{self.puuid}/reconnect",endpoint_type="glz")
+        url = f"https://glz-{self.shard}-1.{self.shard}.a.pvp.net/session/v1/sessions/{self.puuid}/reconnect"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data 
 
 
@@ -792,7 +1022,12 @@ class Client:
         NOTE: Only works on self or active user's friends
         '''
         puuid = self.__check_puuid(puuid)
-        data = self.fetch(endpoint="/chat/v4/presences", endpoint_type="local")
+        url = f"https://127.0.0.1:{self.local_port}/chat/v4/presences"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         try:
             for presence in data['presences']:
                 if presence['puuid'] == puuid:
@@ -806,7 +1041,12 @@ class Client:
         Get a list of online friends and their activity
         private is a base64-encoded JSON string that contains useful information such as party and in-progress game score.
         '''
-        data = self.fetch(endpoint="/chat/v4/presences",endpoint_type="local")
+        url = f"https://127.0.0.1:{self.local_port}/chat/v4/presences"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     def riotclient_session_fetch_sessions(self) -> dict:
@@ -814,7 +1054,12 @@ class Client:
         RiotClientSession_FetchSessions
         Gets info about the running Valorant process including start arguments
         '''
-        data = self.fetch(endpoint="/product-session/v1/external-sessions",endpoint_type="local")
+        url = f"https://127.0.0.1:{self.local_port}/product-session/v1/external-sessions"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     def rnet_fetch_active_alias(self) -> dict:
@@ -822,7 +1067,12 @@ class Client:
         PlayerAlias_RNet_GetActiveAlias
         Gets the player username and tagline
         '''
-        data = self.fetch(endpoint="/player-account/aliases/v1/active",endpoint_type="local")
+        url = f"https://127.0.0.1:{self.local_port}/player-account/aliases/v1/active"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     def rso_rnet_fetch_entitlements_token(self) -> dict:
@@ -832,7 +1082,12 @@ class Client:
         accessToken is used as the token and token is used as the entitlement.
         PBE access can be checked through here
         '''
-        data = self.fetch(endpoint="/player-account/aliases/v1/active",endpoint_type="local")
+        url = f"https://127.0.0.1:{self.local_port}/player-account/aliases/v1/active"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     def rnet_fetch_chat_session(self) -> dict:
@@ -840,7 +1095,12 @@ class Client:
         TEXT_CHAT_RNet_FetchSession
         Get the current session including player name and PUUID
         '''
-        data = self.fetch(endpoint="/chat/v1/session",endpoint_type="local")
+        url = f"https://127.0.0.1:{self.local_port}/chat/v1/session"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     def rnet_fetch_all_friends(self) -> dict:
@@ -848,7 +1108,12 @@ class Client:
         CHATFRIENDS_RNet_GET_ALL
         Get a list of friends     
         '''
-        data = self.fetch(endpoint="/chat/v4/friends",endpoint_type="local")
+        url = f"https://127.0.0.1:{self.local_port}/chat/v4/friends"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data
 
     def rnet_fetch_settings(self) -> dict:
@@ -856,7 +1121,12 @@ class Client:
         RiotKV_RNet_GetSettings
         Get client settings
         '''
-        data = self.fetch(endpoint="/player-preferences/v1/data-json/Ares.PlayerSettings",endpoint_type="local")
+        url = f"https://127.0.0.1:{self.local_port}/player-preferences/v1/data-json/Ares.PlayerSettings"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
         return data
         
     def rnet_fetch_friend_requests(self) -> dict:
@@ -864,7 +1134,23 @@ class Client:
         FRIENDS_RNet_FetchFriendRequests
         Get pending friend requests       
         '''
-        data = self.fetch(endpoint="/chat/v4/friendrequests",endpoint_type="local")
+        url = f"https://127.0.0.1:{self.local_port}/chat/v4/friendrequests"
+        headers = {
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "Authorization": self.authorization
+        }
+        data = requests.get(url=url, headers=headers).json()
+        return data
+
+
+    #Third-Party||Valorant API
+    def fetch_weapons(self) -> dict:
+        '''
+        Content_FetchContent
+        Get names and ids for game content such as agents, maps, guns, etc.
+        '''
+        data = requests.get(f'https://valorant-api.com/v1/weapons/skinlevels')
+        data = data.json()["data"]
         return data
 
 
@@ -947,12 +1233,3 @@ class Client:
                 return dict(zip(keys, data))
         except:
             raise LockfileError("Lockfile not found")
-
-    def fetch_weapons(self) -> dict:
-        '''
-        Content_FetchContent
-        Get names and ids for game content such as agents, maps, guns, etc.
-        '''
-        data = requests.get(f'https://valorant-api.com/v1/weapons/skinlevels')
-        data = data.json()["data"]
-        return data
