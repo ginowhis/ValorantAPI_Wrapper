@@ -644,12 +644,10 @@ class Client:
             "Authorization": self.authorization
         }
         data = requests.get(url=url, headers=headers)
-        status_code = data.status_code
-        if status_code == 400:
+        if data.status_code == 404:
             raise PhaseError("You are not in a core-game")
         else:
-            data.json()
-            return data
+            return data.json()
 
     def coregame_fetch_match(self, match_id:str=None) -> dict:
         '''
@@ -663,12 +661,10 @@ class Client:
             "Authorization": self.authorization
         }
         data = requests.get(url=url, headers=headers)
-        status_code = data.status_code
-        if status_code == 400:
+        if data.status_code == 404:
             raise PhaseError("You are not in a core-game")
         else:
-            data.json()
-            return data
+            return data.json()
 
     def coregame_fetch_match_loadouts(self, match_id:str=None) -> dict:
         '''
@@ -682,12 +678,10 @@ class Client:
             "Authorization": self.authorization
         }
         data = requests.get(url=url, headers=headers)
-        status_code = data.status_code
-        if status_code == 400:
+        if data.status_code == 404:
             raise PhaseError("You are not in a core-game")
         else:
-            data.json()
-            return data
+            return data.json()
        
     def coregame_fetch_team_chat_muc_token(self,match_id:str=None) -> dict:
         '''
@@ -701,12 +695,10 @@ class Client:
             "Authorization": self.authorization
         }
         data = requests.get(url=url, headers=headers)
-        status_code = data.status_code
-        if status_code == 400:
+        if data.status_code == 404:
             raise PhaseError("You are not in a core-game")
         else:
-            data.json()
-            return data
+            return data.json()
 
     def coregame_fetch_allchat_muc_token(self, match_id:str=None) -> dict:
         '''
@@ -720,12 +712,10 @@ class Client:
             "Authorization": self.authorization
         }
         data = requests.get(url=url, headers=headers)
-        status_code = data.status_code
-        if status_code == 400:
+        if data.status_code == 404:
             raise PhaseError("You are not in a core-game")
         else:
-            data.json()
-            return data
+            return data.json()
 
     def coregame_disassociate_player(self,match_id:str=None) -> dict:
         '''
@@ -739,12 +729,10 @@ class Client:
             "Authorization": self.authorization
         }
         data = requests.get(url=url, headers=headers)
-        status_code = data.status_code
-        if status_code == 400:
+        if data.status_code == 404:
             raise PhaseError("You are not in a core-game")
         else:
-            data.json()
-            return data
+            return data.json()
 
     
     # pregame endpoints
@@ -759,12 +747,10 @@ class Client:
             "Authorization": self.authorization
         }
         data = requests.get(url=url, headers=headers)
-        status_code = data.status_code
-        if status_code == 400:
+        if data.status_code == 404:
             raise PhaseError("You are not in a pre-game")
         else:
-            data.json()
-        return data 
+            return data.json()
 
     def pregame_fetch_match(self, match_id:str=None) -> dict:
         '''
@@ -778,12 +764,10 @@ class Client:
             "Authorization": self.authorization
         }
         data = requests.get(url=url, headers=headers)
-        status_code = data.status_code
-        if status_code == 400:
+        if data.tatus_code == 404:
             raise PhaseError("You are not in a pre-game")
         else:
-            data.json()
-        return data 
+            return data.json()
 
     def pregame_fetch_match_loadouts(self, match_id:str=None) -> dict:
         '''
@@ -797,12 +781,10 @@ class Client:
             "Authorization": self.authorization
         }
         data = requests.get(url=url, headers=headers)
-        status_code = data.status_code
-        if status_code == 400:
+        if data.status_code == 404:
             raise PhaseError("You are not in a pre-game")
         else:
-            data.json()
-        return data 
+            return data.json()
 
     def pregame_fetch_chat_token(self,match_id:str=None) -> dict:
         '''
@@ -816,12 +798,10 @@ class Client:
             "Authorization": self.authorization
         }
         data = requests.get(url=url, headers=headers)
-        status_code = data.status_code
-        if status_code == 400:
+        if data.status_code == 404:
             raise PhaseError("You are not in a pre-game")
         else:
-            data.json()
-        return data 
+            return data.json() 
 
     def pregame_fetch_voice_token(self,match_id:str=None) -> dict:
         '''
@@ -835,12 +815,10 @@ class Client:
             "Authorization": self.authorization
         }
         data = requests.get(url=url, headers=headers)
-        status_code = data.status_code
-        if status_code == 400:
+        if data.status_code == 404:
             raise PhaseError("You are not in a pre-game")
         else:
-            data.json()
-        return data 
+            return data.json() 
 
     def pregame_select_character(self, agent_id:str, match_id:str=None) -> dict:
         '''
@@ -856,12 +834,10 @@ class Client:
             "Authorization": self.authorization
         }
         data = requests.post(url=url, headers=headers)
-        status_code = data.status_code
-        if status_code == 400:
+        if data.status_code == 404:
             raise PhaseError("You are not in a pre-game")
         else:
-            data.json()
-        return data 
+            return data.json() 
 
     def pregame_lock_character(self, agent_id:str, match_id:str=None) -> dict:
         '''
@@ -877,12 +853,10 @@ class Client:
             "Authorization": self.authorization
         }
         data = requests.post(url=url, headers=headers)
-        status_code = data.status_code
-        if status_code == 400:
+        if data.status_code == 404:
             raise PhaseError("You are not in a pre-game")
         else:
-            data.json()
-        return data 
+            return data.json() 
 
     def pregame_quit_match(self, match_id:str=None) -> dict:
         '''
@@ -896,12 +870,10 @@ class Client:
             "Authorization": self.authorization
         }
         data = requests.post(url=url, headers=headers)
-        status_code = data.status_code
-        if status_code == 400:
+        if data.status_code == 404:
             raise PhaseError("You are not in a pre-game")
         else:
-            data.json()
-        return data 
+            return data.json() 
 
     
     # contracts endpoints
