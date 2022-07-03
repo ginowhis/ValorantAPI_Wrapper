@@ -1,6 +1,6 @@
 # ValorantAPI_Wrapper
 This is a Unofficial API wrappper for Valorant
-# <img src="https://img.shields.io/github/issues/csence/ValorantAPI_Wrapper?style=for-the-badge" >
+# <img src="https://img.shields.io/github/issues/csence/ValorantAPI_Wrapper" > <img src="https://img.shields.io/pypi/v/valorantapi-wrapper" > [![Downloads](https://pepy.tech/badge/valorantapi-wrapper)](https://pepy.tech/project/valorantapi-wrapper)
 # Installation
 ```pip install ValorantAPI-Wrapper```
 # Example
