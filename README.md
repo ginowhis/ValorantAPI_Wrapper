@@ -5,6 +5,8 @@ This is a Unofficial API wrappper for Valorant
 ```pip install ValorantAPI-Wrapper```
 # Example
 ```python
+from ValorantAPI_Wrapper.client import Client
+
 client = Client(region="eu", auth={ "username": "username", "password": "password" })
 client.activate()
 
