@@ -1,1 +1,5 @@
 *.pyc
+ValorantAPI_Wrapper.toml
+build/
+dist/
+ValorantAPI_Wrapper.egg-info
