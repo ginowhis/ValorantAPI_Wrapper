@@ -215,13 +215,28 @@ class Client:
         Restrictions_FetchPlayerRestrictionsV2
         Checks for any gameplay penalties on the account
         '''
-        url = f"https://pd.{self.shard}.a.pvp.net/restrictions/v2/penalties"
+        url = f"https://pd.{self.shard}.a.pvp.net/restrictions/v3/penalties"
         headers = {
             "X-Riot-Entitlements-JWT": self.en_token,
             "Authorization": self.authorization
         }
         data = requests.get(url=url, headers=headers).json()
         return data
+
+    def fetch_user_from_id(self) -> dict:
+        '''
+        Get username and tagline from puuid.
+        '''
+        url = f"https://pd.{self.shard}.a.pvp.net/name-service/v2/players"
+        headers = {
+            "Authorization": self.authorization,
+            "X-Riot-Entitlements-JWT": self.en_token,
+            "X-Riot-ClientPlatform": self.client_platform,
+            "X-Riot-ClientVersion": self.__get_current_version()
+        }
+        data = requests.put(url=url, headers=headers, json=[self.puuid])
+
+        return data.json()
 
     def fetch_item_progression_definitions(self) -> dict:
         '''
@@ -1116,15 +1131,377 @@ class Client:
 
 
     #Third-Party||Valorant API
+    def fetch_version(self) -> dict:
+        '''
+        Returns data of the current manifest & version the API is running on
+        '''
+        data = requests.get(f'https://valorant-api.com/v1/version')
+        return data.json()["data"]
+
     def fetch_weapons(self) -> dict:
         '''
-        Content_FetchContent
-        Get names and ids for game content such as agents, maps, guns, etc.
+        Returns data and assets of all weapons
         '''
-        data = requests.get(f'https://valorant-api.com/v1/weapons/skinlevels')
-        data = data.json()["data"]
-        return data
+        data = requests.get(f"https://valorant-api.com/v1/weapons")
+        return data.json()["data"]
 
+    def fetch_weapon_skins(self) -> dict:
+        '''
+        Returns data and assets of all weapon skins
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/weapons/skins")
+        return data.json()["data"]
+
+    def fetch_weapon_skin_chromas(self) -> dict:
+        '''
+        Returns data and assets of all weapon skin chromas
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/weapons/skinchromas")
+        return data.json()["data"]
+
+    def fetch_weapon_skin_levels(self) -> dict:
+        '''
+        Returns data and assets of all weapon skin levels
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/weapons/skinlevels")
+        return data.json()["data"]
+
+    def fetch_weapon_by_uuid(self, weaponUuid) -> dict:
+        '''
+        Returns data and assets of the requeted weapon
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/weapons/{weaponUuid}")
+        return data.json()["data"]
+
+    def fetch_weapon_skin_by_uuid(self, weaponSkinUuid) -> dict:
+        '''
+        Returns data and assets of the requeted weapon skin
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/weapons/skins/{weaponSkinUuid}")
+        return data.json()["data"]
+
+    def fetch_weapon_skin_chroma_by_uuid(self, weaponSkinChromaUuid) -> dict:
+        '''
+        Returns data and assets of the requeted weapon skin chroma
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/weapons/skinchromas/{weaponSkinChromaUuid}")
+        return data.json()["data"]
+
+    def fetch_weapon_skin_level_by_uuid(self, weaponSkinLevelUuid) -> dict:
+        '''
+        Returns data and assets of the requeted weapon skin level
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/weapons/skinlevels/{weaponSkinLevelUuid}")
+        return data.json()["data"]
+
+    def fetch_themes(self) -> dict:
+        '''
+        Returns data and assets of all themes
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/themes")
+        return data.json()["data"]
+
+    def fetch_themes_by_uuid(self, themeUuid) -> dict:
+        '''
+        Returns data and assets of the requested theme
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/themes/{themeUuid}")
+        return data.json()["data"]
+    
+    def fetch_sprays(self) -> dict:
+        '''
+        Returns data and assets of all sprays
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/sprays")
+        return data.json()["data"]
+
+    def fetch_spray_levels(self) -> dict:
+        '''
+        Returns data and assets of all spray levels
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/sprays/levels")
+        return data.json()["data"]
+
+    def fetch_spray_by_uuid(self, sprayUuid) -> dict:
+        '''
+        Returns data and assets of the requested spray
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/sprays/{sprayUuid}")
+        return data.json()["data"]
+
+    def fetch_spray_level_by_uuid(self, sprayLevelUuid) -> dict:
+        '''
+        Returns data and assets of the requested spray level
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/sprays/levels/{sprayLevelUuid}")
+        return data.json()["data"]
+
+    def fetch_seasons(self) -> dict:
+        '''
+        Returns data of all seasons
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/seasons")
+        return data.json()["data"]
+
+    def fetch_competitive_seasons(self) -> dict:
+        '''
+        Returns data of all competitive seasons
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/seasons/competitive")
+        return data.json()["data"]
+    
+    def fetch_season_by_uuid(self, seasonUuid) -> dict:
+        '''
+        Returns data of the requested season
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/seasons/{seasonUuid}")
+        return data.json()["data"]
+
+    def fetch_competitive_season_by_uuid(self, competitiveSeasonUuid) -> dict:
+        '''
+        Returns data of the requested competitive season
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/seasons/competitive/{competitiveSeasonUuid}")
+        return data.json()["data"]
+
+    def fetch_player_titles(self) -> dict:
+        '''
+        Returns data of all player title
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/playertitles")
+        return data.json()["data"]
+
+    def fetch_player_title_by_uuid(self, playertitleUuid) -> dict:
+        '''
+        Returns data of the requested player title
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/playertitles/{playertitleUuid}")
+        return data.json()["data"]
+
+    def fetch_player_cards(self) -> dict:
+        '''
+        Returns data and assets of all player cards
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/playercards")
+        return data.json()["data"]
+
+    def fetch_player_card_by_uuid(self, playercardUuid) -> dict:
+        '''
+        Returns data and assets of the requested player card
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/playercards/{playercardUuid}")
+        return data.json()["data"]
+
+    def fetch_maps(self) -> dict:
+        '''
+        Returns data and assets of all maps
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/maps")
+        return data.json()["data"]
+
+    def fetch_map_by_uuid(self, mapUuid) -> dict:
+        '''
+        Returns data and assets of the requested map
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/maps/{mapUuid}")
+        return data.json()["data"]
+
+    def fetch_level_borders(self) -> dict:
+        '''
+        Returns data and assets of all level borders
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/levelborders")
+        return data.json()["data"]
+
+    def fetch_level_border_by_uuid(self, levelborderUuid) -> dict:
+        '''
+        Returns data and assets of the requested level border
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/levelborders/{levelborderUuid}")
+        return data.json()["data"]
+
+    def fetch_gear(self) -> dict:
+        '''
+        Returns data and assets of all gear
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/gear")
+        return data.json()["data"]
+
+    def fetch_gear_by_uuid(self, gearUuid) -> dict:
+        '''
+        Returns data and assets of the requested gear
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/gear/{gearUuid}")
+        return data.json()["data"]
+
+    def fetch_gamemodes(self) -> dict:
+        '''
+        Returns data and assets of all gamemodes
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/gamemodes")
+        return data.json()["data"]
+
+    def fetch_gamemode_equippables(self) -> dict:
+        '''
+        Returns data and assets of the requested player card
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/gamemodes/equippables")
+        return data.json()["data"]
+
+    def fetch_gamemode_by_uuid(self, gamemodeUuid) -> dict:
+        '''
+        Returns data and assets of the requested gamemode
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/gamemodes/{gamemodeUuid}")
+        return data.json()["data"]
+
+    def fetch_gamemode_equippable_by_uuid(self, gamemodeequippableUuid) -> dict:
+        '''
+        Returns data and assets of the requested gamemode equippable
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/gamemodes/equippables/{gamemodeequippableUuid}")
+        return data.json()["data"]
+
+    def fetch_events(self) -> dict:
+        '''
+        Returns data and assets of all events
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/events")
+        return data.json()["data"]
+
+    def fetch_event_by_uuid(self, eventUuid) -> dict:
+        '''
+        Returns data and assets the requested event
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/events/{eventUuid}")
+        return data.json()["data"]
+
+    def fetch_currencies(self) -> dict:
+        '''
+        Returns data and assets of all in-game currencies
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/currencies")
+        return data.json()["data"]
+
+    def fetch_currency_by_uuid(self, currencyUuid) -> dict:
+        '''
+        Returns data and assets the requested in-game currency
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/currencies/{currencyUuid}")
+        return data.json()["data"]
+
+    def fetch_contracts(self) -> dict:
+        '''
+        Returns data and assets of all contracts
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/contracts")
+        return data.json()["data"]
+
+    def fetch_contract_by_uuid(self, contractUuid) -> dict:
+        '''
+        Returns data and assets the requested contract
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/contracts/{contractUuid}")
+        return data.json()["data"]
+
+    def fetch_content_tier(self) -> dict:
+        '''
+        Returns data and assets of all content tiers
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/contenttiers")
+        return data.json()["data"]
+
+    def fetch_content_tier_by_uuid(self, contenttierUuid) -> dict:
+        '''
+        Returns data and assets the requested content tier
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/contenttiers/{contenttierUuid}")
+        return data.json()["data"]
+
+    def fetch_competitive_tiers(self) -> dict:
+        '''
+        Returns data and assets of all competitive tiers
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/competitivetiers")
+        return data.json()["data"]
+
+    def fetch_competitive_tier_by_uuid(self, competitivetierUuid) -> dict:
+        '''
+        Returns data and assets the requested competitive tier table
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/competitivetiers/{competitivetierUuid}")
+        return data.json()["data"]
+
+    def fetch_ceremonies(self) -> dict:
+        '''
+        Returns data and assets of all ceremonies
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/ceremonies")
+        return data.json()["data"]
+
+    def fetch_ceremony_by_uuid(self, ceremoniesUuid) -> dict:
+        '''
+        Returns data and assets of the requested ceremony
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/ceremonies/{ceremoniesUuid}")
+        return data.json()["data"]
+
+    def fetch_bundles(self) -> dict:
+        '''
+        Returns data and assets of all bundles
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/bundles")
+        return data.json()["data"]
+
+    def fetch_bundle_by_uuid(self, bundleUuid) -> dict:
+        '''
+        Returns data and assets of the requested bundle
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/bundles/{bundleUuid}")
+        return data.json()["data"]
+
+    def fetch_buddies(self) -> dict:
+        '''
+        Returns data and assets of all weapon buddies
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/buddies")
+        return data.json()["data"]
+
+    def fetch_buddy_level(self) -> dict:
+        '''
+        Returns data and assets of all weapon buddy levels
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/buddies/levels")
+        return data.json()["data"]
+
+    def fetch_buddy_by_uuid(self, buddyUuid) -> dict:
+        '''
+        Returns data and assets of the requested weapon buddy
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/buddies/{buddyUuid}")
+        return data.json()["data"]
+
+    def fetch_buddy_level_by_uuid(self, buddyLevelUuid) -> dict:
+        '''
+        Returns data and assets of the requested weapon buddy level
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/buddies/levels/{buddyLevelUuid}")
+        return data.json()["data"]
+
+    def fetch_agents(self) -> dict:
+        '''
+        Returns data and assets of all agents and their abilities
+        Info: Yes, there are 2 Sovas. Use the isPlayableCharacter=true filter to make sure you don't have a "duplicate" Sova.
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/agents")
+        return data.json()["data"]
+
+    def fetch_agent_by_uuid(self, agentUuid) -> dict:
+        '''
+        Returns data and assets of the requested agent
+        '''
+        data = requests.get(f"https://valorant-api.com/v1/agents/{agentUuid}")
+        return data.json()["data"]
 
     # local utility functions
     def __get_live_season(self) -> str:
