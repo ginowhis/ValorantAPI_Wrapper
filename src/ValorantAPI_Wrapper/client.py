@@ -131,12 +131,13 @@ class Client:
         data = requests.put(url=url, headers=headers, json=loadout).json()
         return data
 
-    def fetch_mmr(self) -> dict:
+    def fetch_mmr(self, puuid:str=None) -> dict:
         '''
         MMR_FetchPlayer
         Get the match making rating for a player
         '''
-        url=f"https://pd.{self.shard}.a.pvp.net/mmr/v1/players/{self.puuid}"
+        puuid = self.__check_puuid(puuid)
+        url=f"https://pd.{self.shard}.a.pvp.net/mmr/v1/players/{puuid}"
         headers= {
             'X-Riot-Entitlements-JWT': self.en_token,
             'Authorization': self.authorization,
@@ -146,14 +147,15 @@ class Client:
         data = requests.get(url=url, headers=headers).json()
         return data
 
-    def fetch_match_history(self, start_index:int=0, end_index:int=15, queue_id:str="null") -> dict:
+    def fetch_match_history(self, start_index:int=0, end_index:int=15, queue_id:str="null", puuid:str=None) -> dict:
         '''
         MatchHistory_FetchMatchHistory
         Get recent matches for a player
         There are 3 optional query parameters: start_index, end_index, and queue_id. queue can be one of null, competitive, custom, deathmatch, ggteam, newmap, onefa, snowball, spikerush, or unrated.
         '''
+        puuid = self.__check_puuid(puuid)
         self.__check_queue_type(queue_id)
-        url = f"https://pd.{self.shard}.a.pvp.net/match-history/v1/history/{self.puuid}?startIndex={start_index}&endIndex={end_index}" + (f"&queue={queue_id}" if queue_id != "null" else "")
+        url = f"https://pd.{self.shard}.a.pvp.net/match-history/v1/history/{puuid}?startIndex={start_index}&endIndex={end_index}" + (f"&queue={queue_id}" if queue_id != "null" else "")
         headers = {
             "X-Riot-Entitlements-JWT": self.en_token,
             "Authorization": self.authorization,
@@ -178,14 +180,15 @@ class Client:
         data = requests.get(url=url, headers=headers).json()
         return data
 
-    def fetch_competitive_updates(self, start_index:int=0, end_index:int=15, queue_id:str="competitive") -> dict:
+    def fetch_competitive_updates(self, start_index:int=0, end_index:int=15, queue_id:str="competitive", puuid:str=None) -> dict:
         '''
         MMR_FetchCompetitiveUpdates
         Get recent games and how they changed ranking
         There are 3 optional query parameters: start_index, end_index, and queue_id. queue can be one of null, competitive, custom, deathmatch, ggteam, newmap, onefa, snowball, spikerush, or unrated.
         '''
+        puuid = self.__check_puuid(puuid)
         self.__check_queue_type(queue_id)
-        url = f"https://pd.{self.shard}.a.pvp.net/mmr/v1/players/{self.puuid}/competitiveupdates?startIndex={start_index}&endIndex={end_index}" + (f"&queue={queue_id}" if queue_id != "null" else "")
+        url = f"https://pd.{self.shard}.a.pvp.net/mmr/v1/players/{puuid}/competitiveupdates?startIndex={start_index}&endIndex={end_index}" + (f"&queue={queue_id}" if queue_id != "null" else "")
         headers = {
             "X-Riot-Entitlements-JWT": self.en_token,
             "Authorization": self.authorization,
@@ -223,10 +226,11 @@ class Client:
         data = requests.get(url=url, headers=headers).json()
         return data
 
-    def fetch_user_from_id(self) -> dict:
+    def fetch_user_from_id(self, puuid:str = None) -> dict:
         '''
         Get username and tagline from puuid.
         '''
+        puuid = self.__check_puuid(puuid)
         url = f"https://pd.{self.shard}.a.pvp.net/name-service/v2/players"
         headers = {
             "Authorization": self.authorization,
@@ -234,7 +238,7 @@ class Client:
             "X-Riot-ClientPlatform": self.client_platform,
             "X-Riot-ClientVersion": self.__get_current_version()
         }
-        data = requests.put(url=url, headers=headers, json=[self.puuid])
+        data = requests.put(url=url, headers=headers, json=[puuid])
 
         return data.json()
 
@@ -354,7 +358,7 @@ class Client:
         data = requests.get(url=url, headers=headers).json()
         return data
 
-    def party_remove_player(self, puuid:str) -> None:
+    def party_remove_player(self, puuid:str=None) -> None:
         '''
         Party_RemovePlayer
         Removes a player from the current party      

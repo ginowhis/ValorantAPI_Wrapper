@@ -72,7 +72,7 @@ class Auth:
         }
         r = session.put(f'https://auth.riotgames.com/api/v1/authorization', json=data, headers=headers)
         data = r.json()
-        if data["type"] == "auth" or data["type"] == "erorr":
+        if data["type"] == "auth" or data["type"] == "error":
             session.close()
             return 0
         pattern = re.compile('access_token=((?:[a-zA-Z]|\d|\.|-|_)*).*id_token=((?:[a-zA-Z]|\d|\.|-|_)*).*expires_in=(\d*)')
