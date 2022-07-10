@@ -1,5 +1,6 @@
 # ValorantAPI_Wrapper
-This is a Unofficial API wrappper for Valorant
+This is a Unofficial API wrappper for Valorant.
+The base is of this project made by [@colinhartigen](https://github.com/colinhartigan) [valclient.py](https://github.com/colinhartigan/valclient.py)
 # <img src="https://img.shields.io/github/issues/csence/ValorantAPI_Wrapper" > <img src="https://img.shields.io/pypi/v/valorantapi-wrapper" > [![Downloads](https://pepy.tech/badge/valorantapi-wrapper)](https://pepy.tech/project/valorantapi-wrapper)
 # Installation
 ```pip install ValorantAPI-Wrapper```
