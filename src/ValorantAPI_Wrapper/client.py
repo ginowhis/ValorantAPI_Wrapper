@@ -20,7 +20,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class Client:
 
-    def __init__(self, region="na", auth=None):
+    def __init__(self, region="na", auth=None, two_FactorCMD=False):
         '''
         NOTE: when using manual auth, local endpoints will not be available
         auth format:
@@ -28,6 +28,7 @@ class Client:
             "username":"usernamehere",
             "password":"passwordhere"
         }
+        if OAuth2_cmd set to True a cmd will pop up to get the OAuth2 code else you need to give it in the activate method
         '''
         if auth is None:
             self.lockfile_path = os.path.join(
@@ -49,7 +50,7 @@ class Client:
         self.client_platform = "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9"
 
         if auth is not None:
-            self.auth = Auth(auth)
+            self.auth = Auth(auth, two_FactorCMD)
 
         if region in regions:
             self.region = region
@@ -61,7 +62,7 @@ class Client:
         else:
             self.shard = region
 
-    def activate(self) -> None:
+    def activate(self, two_FactorCode: int) -> None:
         '''Activate the client and get authorization'''
         try:
             if self.auth is None:
@@ -72,7 +73,8 @@ class Client:
                 self.local_authorization = self.local_headers["Authorization"]
                 self.local_port = self.lockfile["port"]
             else:
-                self.puuid, self.authorization, self.en_token, _ = self.auth.authenticate()
+                self.auth.authenticate()
+                self.puuid, self.authorization, self.en_token, _ = self.auth.authenticate(two_FactorCode)
         except:
             raise HandshakeError("Unable to activate; is VALORANT running?")
 
@@ -228,7 +230,7 @@ class Client:
 
     def fetch_user_from_id(self, puuid:str = None) -> dict:
         '''
-        Get username and tagline from puuid.
+        Get name and tagline from puuid.
         '''
         puuid = self.__check_puuid(puuid)
         url = f"https://pd.{self.shard}.a.pvp.net/name-service/v2/players"

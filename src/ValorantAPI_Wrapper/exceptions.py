@@ -22,3 +22,9 @@ class PhaseError(Exception):
     This typically occurs when the phase is null (i.e. player is not in the agent select phase.)
   '''
   pass
+
+class OAuth2InputError(Exception):
+  """
+  Raised whenever the Two-Factor Authentication code isn't in the proper format
+  """
+  pass

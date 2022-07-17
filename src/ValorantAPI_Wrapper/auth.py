@@ -1,10 +1,13 @@
-import urllib3
-import requests
 import re
-from  requests.adapters import HTTPAdapter
-from typing import Any
 import ssl
 from collections import OrderedDict
+from typing import Any
+
+import requests
+import urllib3
+from requests.adapters import HTTPAdapter
+
+from exceptions import OAuth2InputError
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -35,11 +38,14 @@ class TLSAdapter(HTTPAdapter):
 
 class Auth:
 
-    def __init__(self, auth):
+    def __init__(self, auth, two_FactorCMD):
         self.username = auth['username']
         self.password = auth['password']
+        self.two_FactorCMD = two_FactorCMD
 
-    def authenticate(self):
+    def authenticate(self, two_FactorCode: str):
+        
+        self.two_FactorCode = two_FactorCode
 
         headers = OrderedDict({
             "Accept-Language": "en-US,en;q=0.9",
@@ -71,10 +77,43 @@ class Auth:
             'password': self.password
         }
         r = session.put(f'https://auth.riotgames.com/api/v1/authorization', json=data, headers=headers)
+        cookies={}
+        cookies.update(r.cookies)
         data = r.json()
         if data["type"] == "auth" or data["type"] == "error":
             session.close()
             return 0
+        elif data["type"] == "multifactor":
+            if self.two_FactorCMD == True:
+                self.two_FactorCode = input("Two-Factor Authentication code: ")
+                if self.two_FactorCode.isnumeric() == False:
+                    raise OAuth2InputError("Only numbers can used in Two-Factor code")
+                elif len(self.two_FactorCode) != 6:
+                    raise OAuth2InputError("Two-Factor code must be 6 number")
+                data = {
+                "type": "multifactor",
+                "code": self.two_FactorCode,
+                "rememberDevice": "True"
+                }
+                r = session.put('https://auth.riotgames.com/api/v1/authorization', json=data, headers=headers)
+                data = r.json()
+                cookies={}
+                cookies.update(r.cookies)
+            else: 
+                if self.two_FactorCode.isnumeric() == False:
+                    raise OAuth2InputError("Only numbers can used in Two-Factor code")
+                elif len(self.two_FactorCode) != 6:
+                    raise OAuth2InputError("Two-Factor code must be 6 number")
+                data = {
+                "type": "multifactor",
+                "code": self.two_FactorCode,
+                "rememberDevice": "True"
+                }
+                r = session.put('https://auth.riotgames.com/api/v1/authorization', json=data, headers=headers)
+                data = r.json()
+                cookies={}
+                cookies.update(r.cookies)
+
         pattern = re.compile('access_token=((?:[a-zA-Z]|\d|\.|-|_)*).*id_token=((?:[a-zA-Z]|\d|\.|-|_)*).*expires_in=(\d*)')
         data = pattern.findall(r.json()['response']['parameters']['uri'])[0]
         access_token = data[0]
